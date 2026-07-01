@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KnoxOS</title>
+    <style>
+        :root {
+            --bg: #9ca4b2;
+            --panel: #efefef;
+            --panel-soft: #e1e1e1;
+            --panel-dark: #7f7f7f;
+            --ink: #111111;
+            --accent: #004080;
+            --accent-deep: #0a2f57;
+            --shadow: #616161;
+            --chrome: #cfcfcf;
+            --chrome-dark: #8d8d8d;
+            --link: #0033cc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.07) 25%, transparent 25%) -18px 0/36px 36px,
+                linear-gradient(225deg, rgba(255,255,255,0.07) 25%, transparent 25%) -18px 0/36px 36px,
+                linear-gradient(315deg, rgba(0,0,0,0.08) 25%, transparent 25%) 0 0/36px 36px,
+                linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%) 0 0/36px 36px,
+                linear-gradient(180deg, #a7afbc 0%, #8b95a4 100%);
+            color: var(--ink);
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+        }
+
+        a {
+            color: var(--link);
+            text-decoration: underline;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .shell {
+            width: min(1120px, 100%);
+            border: 2px solid #ffffff;
+            border-right-color: var(--shadow);
+            border-bottom-color: var(--shadow);
+            background: var(--panel);
+            box-shadow: 0 0 0 1px #2d2d2d, 0 12px 36px rgba(0, 0, 0, 0.32);
+        }
+
+        .titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 12px;
+            background: linear-gradient(180deg, #1f4f8a 0%, #143b6d 100%);
+            color: #fff;
+            border-bottom: 1px solid #0d2340;
+        }
+
+        .titlebar-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .brand {
+            display: inline-block;
+            padding: 6px 10px;
+            border: 2px solid #000;
+            background: linear-gradient(180deg, #ececec 0%, #bdbdbd 100%);
+            box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #8d8d8d;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 26px;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0;
+            color: #111;
+            text-transform: uppercase;
+        }
+
+        .brand-tag {
+            font-size: 12px;
+            color: #d9e5ff;
+            letter-spacing: 0.4px;
+        }
+
+        .navbox {
+            width: 100%;
+            padding: 10px;
+            border-bottom: 1px solid var(--panel-dark);
+            background: linear-gradient(180deg, #dedede 0%, #c8c8c8 100%);
+        }
+
+        .navbox-title {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            color: #4a4a4a;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .navbox a {
+            display: inline-block;
+            margin: 0;
+            border: 2px outset #f2f2f2;
+            background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 100%);
+            padding: 8px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            color: #000;
+            font-weight: 700;
+            box-shadow: inset 1px 1px 0 #fff;
+        }
+
+        .navbox a.active {
+            border-style: inset;
+            background: linear-gradient(180deg, #c8dfff 0%, #b1cfee 100%);
+            color: #0f2b56;
+        }
+
+        .workspace {
+            padding: 14px;
+        }
+
+        .panel {
+            border: 2px solid #ffffff;
+            border-right-color: var(--shadow);
+            border-bottom-color: var(--shadow);
+            background: var(--panel);
+            box-shadow: inset 1px 1px 0 #fff;
+        }
+
+        .panel-inner {
+            border: 1px solid #bcbcbc;
+            background: linear-gradient(180deg, #fdfdfd 0%, #ececec 100%);
+            padding: 14px;
+        }
+
+        .page-shell {
+            display: grid;
+            gap: 14px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.is-active {
+            display: block;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.75fr;
+            gap: 16px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 0.7fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .hero-main {
+            padding: 0;
+        }
+
+        .hero-side {
+            padding: 0;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: clamp(34px, 5vw, 56px);
+            line-height: 0.95;
+            letter-spacing: -1px;
+            color: #10294d;
+            text-shadow: 1px 1px 0 #ffffff;
+        }
+
+        .hero p {
+            margin: 0 0 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 66ch;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .button {
+            display: inline-block;
+            border: 2px outset #f2f2f2;
+            background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 100%);
+            color: #000;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: inset 1px 1px 0 #fff;
+        }
+
+        .button:active {
+            border-style: inset;
+        }
+
+        .hero-side {
+            padding: 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .side-title {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #0f2b56;
+        }
+
+        .side-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .content {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .section {
+            padding: 0;
+        }
+
+        .section h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #0f2b56;
+        }
+
+        .section p {
+            margin: 0 0 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .feature {
+            border: 1px solid #9f9f9f;
+            background: linear-gradient(180deg, #ffffff 0%, #efefef 100%);
+            padding: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--accent);
+            font-size: 13px;
+        }
+
+        .downloads {
+            padding: 0;
+        }
+
+        .downloads h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .downloads .intro {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .release-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .loading-card {
+            border: 1px solid #9c9c9c;
+            background: linear-gradient(180deg, #ffffff 0%, #efefef 100%);
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .release-card {
+            border: 1px solid #9c9c9c;
+            background: linear-gradient(180deg, #ffffff 0%, #efefef 100%);
+            padding: 12px;
+        }
+
+        .release-title {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .release-meta {
+            margin: 0 0 10px;
+            font-size: 12px;
+            color: #4f4f4f;
+        }
+
+        .asset-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .asset {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            padding: 8px 10px;
+            border: 1px solid #c4c4c4;
+            background: #ffffff;
+        }
+
+        .asset span {
+            font-size: 13px;
+        }
+
+        .footer {
+            border-top: 1px solid #8c8c8c;
+            background: linear-gradient(180deg, #d9d9d9 0%, #c6c6c6 100%);
+            padding: 10px 14px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .smallcaps {
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .titlebar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="shell">
+            <header class="titlebar">
+                <div class="titlebar-inner">
+                    <div class="brand">KnoxOS</div>
+                    <div class="brand-tag">Security-focused operating system</div>
+                </div>
+                <nav class="navbox">
+                    <div class="navbox-title">Quick Links</div>
+                    <div class="nav-links">
+                        <a href="#home">Home</a>
+                        <a href="#downloads">Downloads</a>
+                        <a href="#features">Features</a>
+                        <a href="#about">About</a>
+                        <a href="#releases">Releases</a>
+                    </div>
+                </nav>
+            </header>
+
+            <main class="workspace page-shell">
+                <section class="panel page-section is-active" id="home">
+                    <div class="panel-inner section-grid">
+                        <div class="hero-main">
+                        <h1>KnoxOS</h1>
+                        <p>
+                            KnoxOS is a lightweight, security-focused operating system built by Josh Clark and Steven Quintero.
+                        </p>
+                        <p>
+                            Josh Clark is a software engineer and cyber security specialist. Steven Quintero is a hardware engineer and cyber security specialist.
+                            The project focuses on security, customization, and a clean old-school interface.
+                        </p>
+                        <div class="button-row">
+                            <a class="button" href="#downloads">Download Now</a>
+                            <a class="button" href="#features">See Features</a>
+                        </div>
+                        </div>
+
+                        <aside class="hero-side">
+                            <div class="panel-inner">
+                                <h2 class="side-title">Overview</h2>
+                                <ul class="side-list">
+                                    <li>Retro 2000s style</li>
+                                    <li>Security-focused build</li>
+                                    <li>Clean customizable UI</li>
+                                    <li>Lightweight structure</li>
+                                </ul>
+                            </div>
+                        </aside>
+                    </div>
+                </section>
+
+                <section class="panel page-section" id="features">
+                    <div class="panel-inner section-grid">
+                        <div class="section">
+                        <h3>Features</h3>
+                        <div class="feature-grid">
+                            <div class="feature"><strong>Retro Layout</strong> Classic boxed design with a 2000's download page feel.</div>
+                            <div class="feature"><strong>Security Minded</strong> Built around a clean, practical, and focused interface.</div>
+                            <div class="feature"><strong>Customizable</strong> Easy to expand with new sections, links, and release assets.</div>
+                            <div class="feature"><strong>Lightweight</strong> Minimal markup, minimal motion, and fast loading.</div>
+                        </div>
+                        </div>
+
+                        <div class="section">
+                        <h3>Design</h3>
+                        <p>KnoxOS keeps the look simple and solid, with boxed buttons and direct navigation.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel page-section" id="about">
+                    <div class="panel-inner section-grid">
+                        <div class="section">
+                        <h3>About KnoxOS</h3>
+                        <p>KnoxOS was built by Josh Clark and Steven Quintero, two 15 year old teenagers who obsessed over security and wanted a clean, customizable UI for their operating system.</p>
+                        </div>
+
+                        <div class="section">
+                        <h3>Focus</h3>
+                        <p>Simple structure, practical downloads, and a visual style that feels like an older software homepage.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel page-section" id="downloads">
+                    <div class="panel-inner downloads">
+                        <h3>Downloads</h3>
+                        <p class="intro">Latest releases are loaded from the GitHub repository and turned into direct download links below.</p>
+                        <div id="release-list" class="release-list"></div>
+                        <div id="release-fallback" class="release-card" style="display:none;">
+                            <div class="release-title">
+                                <span>No releases were found</span>
+                            </div>
+                            <p class="release-meta">Visit the releases page to check for published builds.</p>
+                            <a class="button" href="https://github.com/polardev-ui/knox/releases" target="_blank" rel="noreferrer">Open GitHub Releases</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel page-section" id="releases">
+                    <div class="panel-inner downloads">
+                        <h3>Releases</h3>
+                        <p class="intro">The download list below is pulled from GitHub when public releases are available.</p>
+                        <div id="release-summary" class="release-list"></div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footer">
+                <div class="smallcaps">KnoxOS Download Center</div>
+                <div>Security focused operating system.</div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const releaseList = document.getElementById('release-list');
+        const releaseSummary = document.getElementById('release-summary');
+        const releaseFallback = document.getElementById('release-fallback');
+        const repoApi = 'https://api.github.com/repos/polardev-ui/knox/releases?per_page=6';
+
+        releaseList.innerHTML = '<article class="loading-card">Checking GitHub releases for the latest ISO images and packages...</article>';
+        releaseSummary.innerHTML = '<article class="loading-card">Checking GitHub releases for the latest ISO images and packages...</article>';
+
+        const pageSections = Array.from(document.querySelectorAll('.page-section'));
+        const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+
+        function showSection(hash) {
+            const targetId = hash && document.getElementById(hash.slice(1)) ? hash.slice(1) : 'home';
+
+            pageSections.forEach((section) => {
+                section.classList.toggle('is-active', section.id === targetId);
+            });
+
+            navLinks.forEach((link) => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${targetId}`);
+            });
+        }
+
+        function formatSize(bytes) {
+            if (!Number.isFinite(bytes)) {
+                return 'unknown size';
+            }
+
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let value = bytes;
+            let unitIndex = 0;
+
+            while (value >= 1024 && unitIndex < units.length - 1) {
+                value /= 1024;
+                unitIndex += 1;
+            }
+
+            return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+        }
+
+        function assetLabel(asset) {
+            const lowered = asset.name.toLowerCase();
+
+            if (lowered.endsWith('.iso')) return 'ISO Image';
+            if (lowered.endsWith('.zip')) return 'Archive';
+            if (lowered.endsWith('.tar.gz') || lowered.endsWith('.tgz')) return 'Source Package';
+            if (lowered.endsWith('.sha256') || lowered.endsWith('.md5') || lowered.includes('checksum')) return 'Checksum';
+            return 'Download';
+        }
+
+        function releaseCard(release) {
+            const assets = release.assets || [];
+            const published = release.published_at ? new Date(release.published_at).toLocaleDateString() : 'unreleased';
+            const assetMarkup = assets.length
+                ? assets.map((asset) => `
+                    <div class="asset">
+                        <span>${assetLabel(asset)}: ${asset.name} (${formatSize(asset.size)})</span>
+                        <a href="${asset.browser_download_url}" target="_blank" rel="noreferrer">Download</a>
+                    </div>
+                `).join('')
+                : '<div class="asset"><span>No assets attached to this release.</span><a href="https://github.com/polardev-ui/knox/releases" target="_blank" rel="noreferrer">View Release</a></div>';
+
+            return `
+                <article class="release-card">
+                    <div class="release-title">
+                        <span>${release.name || release.tag_name || 'Latest Release'}</span>
+                        <a href="${release.html_url}" target="_blank" rel="noreferrer">Release Page</a>
+                    </div>
+                    <p class="release-meta">Tag: ${release.tag_name || 'n/a'} | Published: ${published}</p>
+                    <div class="asset-list">${assetMarkup}</div>
+                </article>
+            `;
+        }
+
+        async function loadReleases() {
+            try {
+                const response = await fetch(repoApi, { headers: { Accept: 'application/vnd.github+json' } });
+
+                if (response.status === 404) {
+                    releaseList.innerHTML = '';
+                    releaseSummary.innerHTML = '<article class="loading-card">No public releases are available yet.</article>';
+                    releaseFallback.style.display = 'block';
+                    releaseFallback.querySelector('.release-meta').textContent = 'The GitHub repository does not currently expose releases.';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Request failed: ${response.status}`);
+                }
+
+                const releases = await response.json();
+
+                if (!Array.isArray(releases) || releases.length === 0) {
+                    releaseList.innerHTML = '';
+                    releaseSummary.innerHTML = '';
+                    releaseFallback.style.display = 'block';
+                    return;
+                }
+
+                releaseList.innerHTML = releases.map(releaseCard).join('');
+                releaseSummary.innerHTML = releases.slice(0, 1).map(releaseCard).join('');
+            } catch (error) {
+                releaseFallback.style.display = 'block';
+                releaseFallback.querySelector('.release-meta').textContent = 'Release data could not be loaded right now. The GitHub releases page still has the latest builds.';
+                releaseSummary.innerHTML = '<article class="loading-card">Release data could not be loaded right now.</article>';
+            }
+        }
+
+        loadReleases();
+        showSection(window.location.hash);
+
+        window.addEventListener('hashchange', () => {
+            showSection(window.location.hash);
+        });
+    </script>
+</body>
+</html>
