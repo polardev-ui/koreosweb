@@ -511,7 +511,7 @@
                                 <span>No releases were found</span>
                             </div>
                             <p class="release-meta">Visit the releases page to check for published builds.</p>
-                            <a class="button" href="https://github.com/polardev-ui/knox/releases" target="_blank" rel="noreferrer">Open GitHub Releases</a>
+                            <a class="button" href="https://github.com/polardev-ui/kore/releases" target="_blank" rel="noreferrer">Open GitHub Releases</a>
                         </div>
                     </div>
                 </section>
@@ -536,7 +536,7 @@
         const releaseList = document.getElementById('release-list');
         const releaseSummary = document.getElementById('release-summary');
         const releaseFallback = document.getElementById('release-fallback');
-        const repoApi = 'https://api.github.com/repos/polardev-ui/knox/releases?per_page=6';
+        const repoApi = 'https://api.github.com/repos/polardev-ui/kore/releases?per_page=6';
 
         releaseList.innerHTML = '<article class="loading-card">Checking GitHub releases for the latest ISO images and packages...</article>';
         releaseSummary.innerHTML = '<article class="loading-card">Checking GitHub releases for the latest ISO images and packages...</article>';
@@ -593,7 +593,7 @@
                         <a href="${asset.browser_download_url}" target="_blank" rel="noreferrer">Download</a>
                     </div>
                 `).join('')
-                : '<div class="asset"><span>No assets attached to this release.</span><a href="https://github.com/polardev-ui/knox/releases" target="_blank" rel="noreferrer">View Release</a></div>';
+                : '<div class="asset"><span>No assets attached to this release.</span><a href="https://github.com/polardev-ui/kore/releases" target="_blank" rel="noreferrer">View Release</a></div>';
 
             return `
                 <article class="release-card">
